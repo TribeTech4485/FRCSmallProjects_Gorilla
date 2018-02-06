@@ -10,14 +10,10 @@ package org.usfirst.frc.team4485.robot;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -48,15 +44,13 @@ public class Robot extends SampleRobot {
 	@Override
 	public void robotInit() {
 		//Initialize robot stuff here
-		talon = new TalonSRX(1);
-		talon.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 1, 10);
-		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10);
+		talon = new TalonSRX(8); //(int) is the port Device Id
+		talon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute, 0, 10); //Sets feedback sensor to (FeedbackDevice, ?, timeout_ms)
 	}
 
 	@Override
 	public void autonomous() {
 		//Auto goes here
-		
 	}
 
 	
@@ -67,13 +61,17 @@ public class Robot extends SampleRobot {
 		
 		while (isOperatorControl() && isEnabled()) {
 
-			velocity = talon.getSelectedSensorVelocity(0);
-			position = talon.getSelectedSensorPosition(0);
-			SmartDashboard.putNumber("Encoder Velocity", velocity);
-			SmartDashboard.putNumber("Encoder Position", position);
+			velocity = talon.getSelectedSensorVelocity(0); // Gets the speed of the motor, stores it in velocity
+			position = talon.getSelectedSensorPosition(0); // Gets the position of the motor, stores it in position
 			
-			// The motors will be updated every 5ms
-			Timer.delay(0.005);
+			SmartDashboard.putNumber("Encoder Velocity", velocity); //Shows velocity on the SmartDashboard
+			SmartDashboard.putNumber("Encoder Position", position); //Shows position on the SmartDashboard
+
+			Timer.delay(0.001); // (time in ms)
+			
+			talon.setSelectedSensorPosition(0, 0, 10); //Sets motor to a certain position (pos, ?, timeout_ms)
+			
+			Timer.delay(0.001);
 		}
 	}
 
